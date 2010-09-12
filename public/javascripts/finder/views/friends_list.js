@@ -7,7 +7,7 @@ Finder.FriendsList = Ext.extend(Ext.List, {
   constructor: function(config) {
     config = Ext.apply({
       fullscreen: true,
-      store: Finder.store,
+      store: Finder.friendStore,
       tpl: '<tpl for="."><div class="contact"><strong>{name}</strong> {handle}</div></tpl>',
       itemSelector: 'div.contact',
       singleSelect: true,

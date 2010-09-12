@@ -1,3 +1,9 @@
-= NEXT
- - build a UI mockup in Sencha Touch
- - continue building out ui in projects/tests/sencha-touch/first_try/
+# NEXT
+ - connect socket to friend generation
+ - determine socket message variations
+   - locationRequest: {to:HANDLE}
+   - locationRequestResponse: {to: HANDLE, position: POSITION}
+   - locationResponse: {from:HANDLE, position: POSITION}
+   
+## Server
+ - stores hash of clientIds and handles

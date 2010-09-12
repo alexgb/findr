@@ -6,6 +6,5 @@ Ext.regModel('Friend', {
     {name: 'name',    type: 'string'},
     {name: 'handle',  type: 'string'},
     {name: 'response_pending',   type: 'boolean', defaultValue: false}
-  ]//,
-  // idProperty: 'id'
+  ]
 });
