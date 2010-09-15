@@ -7,5 +7,8 @@ Ext.setup({
     glossOnIcon: false,
     onReady: function() {
       var mainView = new Finder.MainView();
+      
+      //debug
+      window.mainView = mainView;
     }
 });

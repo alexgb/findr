@@ -74,7 +74,18 @@ Finder.FriendsList = Ext.extend(Ext.List, {
         Ext.getCmp('friends-delete-button').disable();
       }
     }, this);
+    
+    // badge numbering events
+    this.getStore().on('datachanged', function(store) {
+      this.fireEvent('countchanged', [store.getCount()]);
+    }, this);
+    
     Finder.FriendsList.superclass.initEvents.apply(this, arguments);
+  },
+  
+  afterRender: function() {
+    this.fireEvent('countchanged', [this.getStore().getCount()]);
+    Finder.FriendsList.superclass.afterRender.apply(this, arguments);
   },
   
   editHandler: function() {

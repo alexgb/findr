@@ -24,6 +24,8 @@ Finder.MyInfo = Ext.extend(Ext.form.FormPanel, {
         }]
       }],
       items: [{
+        html: '<h1>My Info</h1>'
+      },{
         xtype: 'fieldset',
         items: [{
           xtype: 'textfield',
@@ -50,20 +52,14 @@ Finder.MyInfo = Ext.extend(Ext.form.FormPanel, {
     }
     
     this.load(record);
-    
-    // this.editPanel = this.editPanel || new Finder.FriendsEditPanel();
-    // this.store.add(record);
-    // this.editPanel.load(record);
-    // this.editPanel.show();
   },
   
   saveHandler: function() {
-    console.log(this);
-    console.log(this.getRecord());
     var record = this.getRecord();
     record.dirty = true;
     record.set(this.getValues());
     record.store.sync();
+    this.fireEvent('update', record);
   }
   
 });
