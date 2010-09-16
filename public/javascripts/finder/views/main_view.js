@@ -26,7 +26,6 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
         title: 'Me',
         xtype: 'finder-my-info',
         id: 'finder-my-info-panel',
-        // html: 'My Info - Name, handle',
         iconCls: 'user'
       }]
     }, config);
@@ -42,6 +41,13 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
    */
   initEvents: function() {
     this.myInfoPanel = Ext.getCmp('finder-my-info-panel');
+    // this.socket.on('connect', function() {
+    //   var msg = "";
+    //   msg +=  "host: " + this.host + "\n";
+    //   msg +=  "port: " + this.options.port + "\n";
+    //   msg +=  "type: " + this.transport.type + "\n";
+    //   window.alert(msg);
+    // });
     
     // socket message retrieval
     this.socket.on('message', this.onSocketMessage.createDelegate(this));
@@ -79,10 +85,8 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     
     // register events to update badge numbers
     Ext.each(this.getTabBar().items.items, function(tab) {
-      console.log(tab.badgeText);
-      console.log(tab.getCard());
       tab.getCard().on('countchanged', function(count) {
-        this.setBadge(count);
+        this.setBadge(count === 0 ? null : count);
       }, this);
     });
   },
@@ -99,11 +103,24 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     console.log('socket message received ', msg);
     switch(msg.type) {
     case 'pushFriend':
-      var record = Ext.ModelMgr.create({
+      var friend, position;
+      
+      friend = Finder.friendStore.findRecord('handle', msg.payLoad.handle) || Ext.ModelMgr.create({
         handle:   msg.payLoad.handle,
         name:     msg.payLoad.name
       }, 'Friend');
-      Finder.friendStore.add(record);
+      Finder.friendStore.add(friend);
+      
+      if (msg.payLoad.position) {
+        console.log(msg.payLoad.position);
+        position = Ext.ModelMgr.create(Ext.apply(msg.payLoad.position, {handle: msg.payLoad.handle}), 'Position');
+        Finder.positionStore.add(position);
+      }
+      
+      // Finder.friendStore.sync();
+      // if (msg.payLoad.position) {
+      //   Ext.getCmp('finder-map-panel').setFriendLocation(msg.payLoad);
+      // }
       break;
     }
   },

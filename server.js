@@ -126,6 +126,7 @@ io.on('clientConnect', function(client){
 
 
 io.on('clientMessage', function(message, client) {
+  sys.puts(sys.inspect(message));
   switch(message.type) {
   case 'register':
     onClientRegister(client, message);
@@ -134,14 +135,38 @@ io.on('clientMessage', function(message, client) {
     onlocationNotification(client, message);
     break;
   }
-  sys.puts(sys.inspect(clients, true, 2));
+  // sys.puts(sys.inspect(clients, true, 2));
+  printClients();
 });
+
+
 
 
 
 
 // Helpers
 // .......
+
+var printClients = function() {
+  sys.puts("\033[1;47m    Clients:    \033[0m");
+  for (var handle in clients) {
+    var c = clients[handle];
+    sys.puts("\033[1;42m  " + handle + "  \033[0m" + " => ");
+    if (typeof c === "object") {
+      for (var prop in c) {
+        var v = c[prop];
+        if (prop === 'position') {
+          v = "{";
+          for (var key in c[prop]) {
+            v += key + " => " + c[prop][key] + ", ";
+          }
+          v += "}";
+        }
+        sys.puts("\t" + prop + " => " + v);
+      }
+    }
+  }
+};
 
 // function(path) {
 //   try {

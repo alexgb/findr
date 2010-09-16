@@ -10,8 +10,8 @@ Ext.ns('Finder');
 Finder.Socket = function(config) {
   
   config = Ext.apply({
-    host: 'localhost',
-    port: 8080,
+    host: document.domain,
+    port: document.location.port,
     transports: ['websocket', 'xhr-multipart', 'htmlfile', 'xhr-polling']
   }, config);
   

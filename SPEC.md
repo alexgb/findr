@@ -1,16 +1,24 @@
-Create Channel (Party)
- - anyone on channel can make a request for a user location
- - anyone on channel can see location of anybody else
+## Client to Server Messages
+  - register: {handle: HANDLE, name: NAME, friends: FRIENDS}
+  - locationNotification: {from: HANDLE, position: POSITION}
  
- 
-Node Server
+## Server to Client Messages
+  - pushFriends: {handle, name, position}
+   
+## Server
+ - stores hash of clientIds and handles
 
-FRONTEND
-========
 
-- Sproutcore
-- Two panels; friends and map.
-- Add friend to list, fires off request to server through ws
+## Making a Location Request
+  1. select friend and click location button
+  2. sends locationRequest message to server
+  3. server sends email to specified handle
+  4. friend receives email
+  5. friend clicks url to bring them to app, with their handle encoded in url
+  6. app saves their handle into myinfo
+  7. location send to server in locationResponse message
+  8. server saves location information for user
+  9. server updates all friends who have user as friend using locationResponse message
 
 
 BACKEND
