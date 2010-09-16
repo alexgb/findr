@@ -8,8 +8,15 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
     
     // property to track badge notifications
     this.unViewedMarkers = 0;
+    
     this.friendMarkers = {};
+    this.myMarker = null;
     this.store = Finder.positionStore;
+    
+    // google maps info window
+    this.infoWindow = new google.maps.InfoWindow({
+      size: new google.maps.Size(50,50)
+    });
     
     config = Ext.apply({
       title: 'Map',
@@ -56,11 +63,8 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
     
     // create markers when adding position records
     this.store.on('add', function(store, records) {
-      Ext.each(records, function(rec) {
-        var friend = Finder.friendStore.findRecord('handle', rec.get('handle'));
-        console.log(friend);
-        
-        this._createMarker(rec.data, 'friend', rec.get('handle'));
+      Ext.each(records, function(positionRec) {
+        this.drawFriend(positionRec);
       }, this);
     }, this);
     
@@ -75,39 +79,65 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
   
   
   setMyLocation: function(position) {
-    this._createMarker(position, 'me', 'Me');
+    var coordinates = new google.maps.LatLng(position.latitude, position.longitude);
+    
+    if (this.myMarker) {
+      this.myMarker.setPosition(coordinates);
+    } else {
+      this.myMarker = this._createMarker(position, 'me', 'Me');
+      this._getMapCmp().panTo(coordinates);
+    }
   },
   
-  // setFriendLocation: function(friendObject) {
-  //   this._createMarker(friendObject.position, 'friend', friendObject.name + " <" + friendObject.handle + ">");
-  //   this.unViewedMarkers++;
-  //   this.fireEvent('countchanged', this.unViewedMarkers);
-  // },
   
+  drawFriend: function(positionRec) {
+    var coordinates = new google.maps.LatLng(positionRec.get('latitude'), positionRec.get('longitude')),
+        handle = positionRec.get('handle'),
+        friend = Finder.friendStore.findRecord('handle', handle),
+        title = friend ? friend.get('name') + " <" + handle + ">" : handle,
+        map = this._getMapCmp(),
+        marker;
+    
+    // draw marker for friend
+    if (marker = this.friendMarkers[handle]) {
+      marker.setPosition(coordinates);
+    } else {
+      marker = this._createMarker(positionRec.data, 'friend', title);
+      this.friendMarkers[handle] = marker;
+      
+      // register overlay events
+      google.maps.event.addListener(marker, 'click', function() {
+        var el = document.createElement('div');
+        el.setAttribute('class', 'x-html');
+        el.innerHTML = String.format("<h3>{0}</h3><p>{1}</p>", friend.get('name'), friend.get('handle'));
+        
+        this.infoWindow.setContent(el);
+        this.infoWindow.open(this._getMapCmp(), marker);
+      }.createDelegate(this));
+    }
+    
+    map.panTo(coordinates);
+  },
   
   _createMarker: function(position, type, title) {
     var coordinates = new google.maps.LatLng(position.latitude, position.longitude),
-        gMap = Ext.getCmp('finder-g-map').map,
         markerImage;
         
     markerImage = function(t) {
       return this[t + "MarkerImage"];
     }.call(this, type);
     
-    if (this.myMarker) {
-      this.myMarker.setPosition(coordinates);
-    }
-    else {
-      this.myMarker = new google.maps.Marker({
-         position: coordinates,
-         icon: markerImage,
-         shadow: this.markerShadowImage,
-         title : title,
-         map: gMap
-      });
-
-      gMap.panTo(coordinates);
-    }
+    return new google.maps.Marker({
+       position: coordinates,
+       icon: markerImage,
+       shadow: this.markerShadowImage,
+       title : title,
+       map: this._getMapCmp()
+    });
+  },
+  
+  _getMapCmp: function() {
+    return Ext.getCmp('finder-g-map').map;
   }
   
   
