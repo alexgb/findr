@@ -41,26 +41,18 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
    */
   initEvents: function() {
     this.myInfoPanel = Ext.getCmp('finder-my-info-panel');
-    // this.socket.on('connect', function() {
-    //   var msg = "";
-    //   msg +=  "host: " + this.host + "\n";
-    //   msg +=  "port: " + this.options.port + "\n";
-    //   msg +=  "type: " + this.transport.type + "\n";
-    //   window.alert(msg);
-    // });
     
     // socket message retrieval
     this.socket.on('message', this.onSocketMessage.createDelegate(this));
     
     // register user
-    this.socket.send({
-      type: 'register',
-      payLoad: {
-        handle:     Finder.meStore.getAt(0).get('handle'),
-        friends:    Finder.friendStore.collectRecords(['handle', 'name']),
-        name:       Finder.meStore.getAt(0).get('name')
-      }
-    });
+    this.onUserChange();
+    
+    // register changes to user
+    Finder.meStore.on('datachanged', this.onUserChange, this);
+    
+    // register changes to friends
+    Finder.friendStore.on('datachanged', this.onUserChange, this);
     
     // geo location
     this.geoLocation.on('locationupdate', function(geo) {
@@ -69,18 +61,7 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     }, this);
     this.geoLocation.updateLocation();
     
-    // register changes to user
-    this.myInfoPanel.on('update', function(rec) {
-      this.socket.send({
-        type: 'register',
-        payLoad: {
-          handle:   rec.get('handle'),
-          friends:  Finder.friendStore.collectRecords(['handle', 'name']), 
-          name:     rec.get('name')
-        }
-      });
-    }, this);
-    
+    // call super
     Finder.MainView.superclass.initEvents.apply(this, arguments);
     
     // register events to update badge numbers
@@ -91,13 +72,19 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     });
   },
   
-  // onSocketMessage: function(msg) {
-  //   // Ext.getCmp('friends-edit-button')
-  //   console.log(msg);
-  //   // if ('buffer' in msg) {
-  //   //   this.onSocketMessageMsg
-  //   // }
-  // },
+  /**
+   * updates server when user information changes
+   */
+  onUserChange: function() {
+    this.socket.send({
+      type: 'register',
+      payLoad: {
+        handle:     Finder.meStore.getAt(0).get('handle'),
+        friends:    Finder.friendStore.collectRecords(['handle', 'name']),
+        name:       Finder.meStore.getAt(0).get('name')
+      }
+    });
+  },
   
   onSocketMessage: function(msg) {
     console.log('socket message received ', msg);
