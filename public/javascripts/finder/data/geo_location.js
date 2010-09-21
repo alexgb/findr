@@ -16,6 +16,7 @@ Finder.GeoLocation = Ext.extend(Ext.util.GeoLocation, {
   
   initEvents: function() {
     this.on('locationerror', function( geo, bTimeout, bPermissionDenied, bLocationUnavailable, message) {
+      this.setAutoUpdate(false);
       alert('Your location could not be determined.');
     });
   }
