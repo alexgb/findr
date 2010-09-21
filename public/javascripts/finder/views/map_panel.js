@@ -109,7 +109,7 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
       google.maps.event.addListener(marker, 'click', function() {
         var el = document.createElement('div');
         el.setAttribute('class', 'x-html');
-        el.innerHTML = String.format("<h3>{0}</h3><p>{1}</p>", friend.get('name'), friend.get('handle'));
+        el.innerHTML = String.format("<h3>{0}</h3><p>{1}</p><p>{2}", friend.get('name'), friend.get('handle'), positionRec.get('created_at').format("l, F d, Y g:i:s A"));
         
         this.infoWindow.setContent(el);
         this.infoWindow.open(this._getMapCmp(), marker);

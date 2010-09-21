@@ -9,6 +9,7 @@ Ext.regModel('Position', {
     {name: 'altitudeAccuracy',    type: 'float'},
     {name: 'latitude',            type: 'float'},
     {name: 'longitude',           type: 'float'},
-    {name: 'speed',               type: 'float'}
+    {name: 'speed',               type: 'float'},
+    {name: 'created_at',          type: 'date', convert: function(){return new Date();}}                             // store sets this
   ]
 });
