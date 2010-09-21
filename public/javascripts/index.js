@@ -1,10 +1,10 @@
 /*globals Ext Finder */
 
 Ext.setup({
-    // icon: 'icon.png',
+    icon: 'images/icon.png',
     // tabletStartupScreen: 'tablet_startup.png',
-    // phoneStartupScreen: 'phone_startup.png',
-    glossOnIcon: false,
+    phoneStartupScreen: 'images/phone_startup.png',
+    glossOnIcon: true,
     onReady: function() {
       var mainView = new Finder.MainView();
       
