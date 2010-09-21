@@ -30,23 +30,23 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
     
     this.meMarkerImage = new google.maps.MarkerImage(
       'images/me_point.png',
-      new google.maps.Size(32, 31),
+      new google.maps.Size(60, 60),
       new google.maps.Point(0,0),
-      new google.maps.Point(16, 31)
+      new google.maps.Point(30, 60)
     );
     
     this.friendMarkerImage = new google.maps.MarkerImage(
       'images/friend_point.png',
-      new google.maps.Size(32, 31),
+      new google.maps.Size(60, 60),
       new google.maps.Point(0,0),
-      new google.maps.Point(16, 31)
+      new google.maps.Point(30, 60)
     );
         
     this.markerShadowImage = new google.maps.MarkerImage(
       'images/shadow.png',
-      new google.maps.Size(64, 52),
+      new google.maps.Size(90, 60),
       new google.maps.Point(0,0),
-      new google.maps.Point(-5, 42)
+      new google.maps.Point(30, 60)
     );
     
     Finder.MainView.superclass.constructor.call(this, config);
