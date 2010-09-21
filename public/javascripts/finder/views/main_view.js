@@ -49,13 +49,14 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     this.onUserChange();
     
     // register changes to user
-    Finder.meStore.on('datachanged', this.onUserChange, this);
+    Finder.meStore.on('update', this.onUserChange, this);
     
     // register changes to friends
-    Finder.friendStore.on('datachanged', this.onUserChange, this);
+    Finder.friendStore.on('update', this.onUserChange, this);
     
     // geo location
     this.geoLocation.on('locationupdate', function(geo) {
+      console.log('location', geo);
       Ext.getCmp('finder-map-panel').setMyLocation(geo);
       this.sendLocation(geo);
     }, this);
@@ -76,6 +77,7 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
    * updates server when user information changes
    */
   onUserChange: function() {
+    console.log('sending new user info');
     this.socket.send({
       type: 'register',
       payLoad: {
@@ -92,22 +94,19 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     case 'pushFriend':
       var friend, position;
       
-      friend = Finder.friendStore.findRecord('handle', msg.payLoad.handle) || Ext.ModelMgr.create({
-        handle:   msg.payLoad.handle,
-        name:     msg.payLoad.name
-      }, 'Friend');
-      Finder.friendStore.add(friend);
+      if (!Finder.friendStore.findRecord('handle', msg.payLoad.handle)) {
+        Finder.friendStore.add(Ext.ModelMgr.create({
+          handle:   msg.payLoad.handle,
+          name:     msg.payLoad.name
+        }, 'Friend'));
+      }
+      Finder.friendStore.sync();
       
       if (msg.payLoad.position) {
         console.log(msg.payLoad.position);
         position = Ext.ModelMgr.create(Ext.apply(msg.payLoad.position, {handle: msg.payLoad.handle}), 'Position');
         Finder.positionStore.add(position);
       }
-      
-      // Finder.friendStore.sync();
-      // if (msg.payLoad.position) {
-      //   Ext.getCmp('finder-map-panel').setFriendLocation(msg.payLoad);
-      // }
       break;
     }
   },
@@ -124,8 +123,7 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
           accuracy:         position.accuracy,
           altitude:         position.altitude,
           altitudeAccuracy: position.altitudeAccuracy,
-          speed:            position.speed,
-          timestamp:        position.timestampe
+          speed:            position.speed
         }
       }
     });
