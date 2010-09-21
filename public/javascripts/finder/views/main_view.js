@@ -71,13 +71,17 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
         this.setBadge(count === 0 ? null : count);
       }, this);
     });
+    
+    // if user handle is blank then go to me card
+    if (!(Finder.meStore.getAt(0) && Finder.meStore.getAt(0).get('handle'))) {
+      this.setCard(2);
+    }
   },
   
   /**
    * updates server when user information changes
    */
   onUserChange: function() {
-    console.log('sending new user info');
     this.socket.send({
       type: 'register',
       payLoad: {

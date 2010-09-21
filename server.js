@@ -126,7 +126,6 @@ io.on('clientConnect', function(client){
 
 
 io.on('clientMessage', function(message, client) {
-  sys.puts(sys.inspect(message));
   switch(message.type) {
   case 'register':
     onClientRegister(client, message);
@@ -135,7 +134,6 @@ io.on('clientMessage', function(message, client) {
     onlocationNotification(client, message);
     break;
   }
-  // sys.puts(sys.inspect(clients, true, 2));
   printClients();
 });
 

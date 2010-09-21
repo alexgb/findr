@@ -7,7 +7,7 @@ Finder.MyInfo = Ext.extend(Ext.form.FormPanel, {
   constructor: function(config) {
     config = Ext.apply({
       items: [{
-        html: '<h1>My Info</h1><p>Provide a name and handle (currently only email addresses) to identify you</p>'
+        html: '<div class="x-html"><h1>My Info</h1><p>Provide a name and handle (currently only supports email address) to identify you.</p></div>'
       },{
         xtype: 'fieldset',
         items: [{
