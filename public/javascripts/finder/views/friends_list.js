@@ -91,12 +91,18 @@ Finder.FriendsList = Ext.extend(Ext.List, {
     Finder.FriendsList.superclass.afterRender.apply(this, arguments);
   },
   
+  /**
+   * opens record edit window for selected record
+   */
   editHandler: function() {
     this.editPanel = this.editPanel || new Finder.FriendsEditPanel();
     this.editPanel.load(this.getSelectedRecords()[0]);
     this.editPanel.show();
   },
   
+  /**
+   * adds new record and begins record edit process
+   */
   addHandler: function() {
     var record = Ext.ModelMgr.create({}, 'Friend');
     
@@ -105,12 +111,12 @@ Finder.FriendsList = Ext.extend(Ext.List, {
     this.editPanel.show();
   },
   
+  /**
+   * removes selected record from list
+   */
   deleteHandler: function() {
-    // this.store.remove(this.getSelectedRecords()[0]);
-    // this.store.sync();
-    this.store.proxy.batch({
-      destroy: this.getSelectedRecords()
-    });
+    this.store.remove(this.getSelectedRecords());
+    this.store.sync();
   },
   
   /**
