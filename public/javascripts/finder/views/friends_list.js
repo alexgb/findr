@@ -58,6 +58,9 @@ Finder.FriendsList = Ext.extend(Ext.List, {
       }]
     }, config);
     
+    this.editPanel = new Finder.FriendsEditPanel();
+    this.editPanel.on('save', this.onEditPanelSave, this);
+    
     Finder.FriendsList.superclass.constructor.call(this, config);
   },
   
@@ -98,7 +101,6 @@ Finder.FriendsList = Ext.extend(Ext.List, {
     var record = Ext.ModelMgr.create({}, 'Friend');
     
     this.editPanel = this.editPanel || new Finder.FriendsEditPanel();
-    this.store.add(record);
     this.editPanel.load(record);
     this.editPanel.show();
   },
@@ -109,12 +111,18 @@ Finder.FriendsList = Ext.extend(Ext.List, {
     this.store.proxy.batch({
       destroy: this.getSelectedRecords()
     });
-  }
+  },
   
-  // addFriend: function(record) {
-  //   this.store.add(record);
-  //   this.store.sync();
-  // }
+  /**
+   * called when the edit panel saves it's record
+   */
+  onEditPanelSave: function(record) {
+    // if it's a new record
+    if (record.store !== this.store) {
+      this.store.add(record);
+    }
+    this.store.sync();
+  }
   
 });
 

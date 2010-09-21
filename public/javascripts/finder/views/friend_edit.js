@@ -53,11 +53,16 @@ Finder.FriendsEditPanel = Ext.extend(Ext.form.FormPanel, {
     Finder.FriendsEditPanel.superclass.constructor.call(this, config);
   },
   
+  /**
+   * fires an event on save that should be handled by object that initiated panel
+   */
   saveHandler: function() {
     var record = this.getRecord();
+    
     record.dirty = true;
     record.set(this.getValues());
-    record.store.sync();
+    
+    this.fireEvent('save', record);
     this.hide();
   }
   
