@@ -116,7 +116,26 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
       }.createDelegate(this));
     }
     
-    map.panTo(coordinates);
+    // map.panTo(coordinates);
+    this.showAllMarkers();
+  },
+  
+  /**
+   * sets the map boundaries to show my marker location and all friend markers
+   */
+  showAllMarkers: function() {
+    var bounds = new google.maps.LatLngBounds(),
+        m;
+    
+    if (this.myMarker) {
+      bounds.extend(this.myMarker.getPosition());
+    }
+    
+    for (m in this.friendMarkers) {
+      bounds.extend(this.friendMarkers[m].getPosition());
+    }
+    
+    this._getMapCmp().fitBounds(bounds);
   },
   
   _createMarker: function(position, type, title) {
