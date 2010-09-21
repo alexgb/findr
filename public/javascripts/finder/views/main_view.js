@@ -18,7 +18,8 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
         type: 'pop'
       },
       items: [
-        new Finder.MapPanel({id: 'finder-map-panel'}), {
+        new Finder.MapPanel({id: 'finder-map-panel'}), 
+      {
         title: 'Friends',
         xtype: 'finder-friends-list',
         iconCls: 'team'
@@ -26,7 +27,8 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
         title: 'Me',
         xtype: 'finder-my-info',
         id: 'finder-my-info-panel',
-        iconCls: 'user'
+        iconCls: 'user',
+        scroll: 'vertical'
       }]
     }, config);
     
