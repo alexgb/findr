@@ -6,25 +6,8 @@ Finder.MyInfo = Ext.extend(Ext.form.FormPanel, {
   
   constructor: function(config) {
     config = Ext.apply({
-      dockedItems: [{
-        dock: 'bottom',
-        xtype: 'toolbar',
-        items: [{
-          text: 'Reset',
-          scope: this,
-          handler: function() {
-            this.reset();
-          }
-        },{
-          xtype: 'spacer'
-        },{
-          text: 'Save',
-          scope: this,
-          handler: this.saveHandler
-        }]
-      }],
       items: [{
-        html: '<h1>My Info</h1>'
+        html: '<h1>My Info</h1><p>Provide a name and handle (currently only email addresses) to identify you</p>'
       },{
         xtype: 'fieldset',
         items: [{
@@ -36,9 +19,11 @@ Finder.MyInfo = Ext.extend(Ext.form.FormPanel, {
           name : 'handle',
           label: 'Handle'
         }]
-      }]
+      }],
+      listeners: {
+        deactivate: this.saveHandler
+      }
     }, config);
-    
     
     Finder.MyInfo.superclass.constructor.call(this, config);
     this.initializeRecord();
