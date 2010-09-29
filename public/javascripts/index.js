@@ -2,7 +2,7 @@
 
 Ext.setup({
     icon: 'images/icon.png',
-    // tabletStartupScreen: 'tablet_startup.png',
+    tabletStartupScreen: 'images/tablet_startup.png',
     phoneStartupScreen: 'images/phone_startup.png',
     glossOnIcon: true,
     onReady: function() {

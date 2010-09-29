@@ -98,13 +98,14 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     console.log('socket message received ', msg);
     switch(msg.type) {
     case 'pushFriend':
-      var friend, position;
+      var friend = Finder.friendStore.findRecord('handle', msg.payLoad.handle),
+          position;
       
-      if (!Finder.friendStore.findRecord('handle', msg.payLoad.handle)) {
-        Finder.friendStore.add(Ext.ModelMgr.create({
-          handle:   msg.payLoad.handle,
-          name:     msg.payLoad.name
-        }, 'Friend'));
+      if (friend) {
+        friend.set(msg.payLoad);
+      }
+      else {
+        Finder.friendStore.add(Ext.ModelMgr.create(msg.payLoad, 'Friend'));
       }
       Finder.friendStore.sync();
       

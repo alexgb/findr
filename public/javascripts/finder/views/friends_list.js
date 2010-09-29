@@ -8,7 +8,16 @@ Finder.FriendsList = Ext.extend(Ext.List, {
     config = Ext.apply({
       fullscreen: true,
       store: Finder.friendStore,
-      tpl: '<tpl for="."><div class="contact"><strong>{name}</strong> {handle}</div></tpl>',
+      tpl: [
+        '<tpl for=".">',
+          '<div class="contact">',
+          '<strong>{name}</strong> {handle}',
+            '<tpl if="connected">',
+              '<div style="float:right; margin-top: -3px;"><img src="/images/green_indicator.png" /></div>',
+            '</tpl>',
+          '</div>',
+        '</tpl>'
+      ],
       itemSelector: 'div.contact',
       singleSelect: true,
       scroll: 'vertical',

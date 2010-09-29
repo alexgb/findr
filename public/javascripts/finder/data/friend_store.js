@@ -4,6 +4,21 @@ Ext.ns('Finder');
 
 Finder.FriendStore = Ext.extend(Ext.data.Store, {
   
+  constructor: function() {
+    console.log('contstructing');
+    Finder.FriendStore.superclass.constructor.apply(this, arguments);
+    
+    // reset connected property to false when reading from proxy
+    // in only reads when initializing
+    this.on('read', function(store, records){
+      Ext.each(records, function(r) {
+        console.log('setting ', r.get('name'));
+        r.set('connected', false);
+      });
+      this.sync();
+    });
+  },
+  
   /**
    * returns an array of objects with specified properties
    */

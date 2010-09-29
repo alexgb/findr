@@ -49,7 +49,7 @@ app.listen(8080);
 var _pushFriend = function(client, friend) {
   client.client.send({
     type: 'pushFriend',
-    payLoad: {handle: friend.handle, name: friend.name, position: friend.position}
+    payLoad: {handle: friend.handle, name: friend.name, position: friend.position, connected: !!friend.client}
   });
 };
 
