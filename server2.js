@@ -25,7 +25,18 @@ app.listen(8080);
 // ...........
 User.on('update', function(user) {
   sys.puts('updated user: ' + user.get('name'));
-  // send updated information to each friend
+  var friends = user.get('friends'),
+      friend_socket;
+
+  if (friends) {
+    friends.forEach(function(f) {
+      friend_socket = f.get('socket');
+      if (friend_socket && friend_socket.connected) {
+        sys.puts('should be updating user ' + f.get('name') + 'with new friend info');
+        friend_socket.send({ type: 'pushFriend', payLoad: user.toObj()});
+      }
+    });
+  }
 });
 
 
@@ -57,17 +68,15 @@ io.on('clientMessage', function(message, client) {
     // onClientRegister(client, message);
     break;
   case 'locationNotification':
-    sys.puts('location message');
-    sys.puts(sys.inspect(data));
-    // user = User.get(data.from);
-    // user.set('position', data.position);
+    user = User.get(message.from);
+    user.set('position', data.position);
     // onlocationNotification(client, message);
     break;
   case 'locationRequest':
     // onlocationRequest(client, message);
     break;
   }
-  sys.puts(sys.inspect(user.toObj()));
+  // sys.puts(sys.inspect(user.toObj()));
   // printClients();
 });
 
