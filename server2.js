@@ -5,6 +5,7 @@ var sockets = require('./vendor/socket.io-node/'),
     sys = require('sys'),
     jade = require('jade'),
     User = require('./lib/user').User,
+    debug = require('./lib/debug'),
     app,
     io;
 
@@ -42,7 +43,7 @@ User.on('update', function(user) {
 // DEBUG
 // .....
 
-var debug = {count: 0};
+debug.count = 0;
 
 
 // Socket.IO
@@ -57,6 +58,7 @@ io.on('clientMessage', function(message, client) {
   debug.count++;
   
   sys.puts(debug.count + ' client message: ' + message.type + ', ' + data.handle);
+  debug.printUsers(User);
   
   switch(message.type) {
     
