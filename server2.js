@@ -5,7 +5,10 @@ var sockets = require('./vendor/socket.io-node/'),
     sys = require('sys'),
     jade = require('jade'),
     User = require('./lib/user').User,
+    email = require('./lib/email'),
+    querystring = require('querystring'),
     debug = require('./lib/debug'),
+    fs = require('fs'),
     app,
     io;
 
@@ -44,6 +47,10 @@ User.on('update', function(user) {
 // .....
 
 debug.count = 0;
+
+// Email
+// .....
+email.setup(JSON.parse(fs.readFileSync('./config/settings.json').toString()).email);
 
 
 // Socket.IO
@@ -84,6 +91,13 @@ io.on('clientMessage', function(message, client) {
     break;
     
   case 'locationRequest':
+    sys.puts(querystring.escape(email));
+    email.send({
+      to: data.handle,
+      from: 'alex.gibbons@gmail.com',
+      subject: 'Where are you?',
+      body: 'http://localhost:8080#' + querystring.escape(data.handle)
+    });
     break;
   }
 });

@@ -4,23 +4,21 @@ require 'pony'
 
 # option definitions
 args = GetoptLong.new(
-  [ "--from",         "-f",   GetoptLong::REQUIRED_ARGUMENT ],
-  [ "--to",           "-t",   GetoptLong::REQUIRED_ARGUMENT ],
-  [ "--subject",      "-s",   GetoptLong::OPTIONAL_ARGUMENT ],
-  [ "--body",         "-b",   GetoptLong::OPTIONAL_ARGUMENT]
+  [ "--from",                 "-f",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--to",                   "-t",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--subject",              "-s",   GetoptLong::OPTIONAL_ARGUMENT ],
+  [ "--body",                 "-b",   GetoptLong::OPTIONAL_ARGUMENT ],
+  [ "--address",              "-a",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--port",                 "-p",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--enable_starttls_auto", "-e",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--user_name",            "-u",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--password",             "-w",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--authentication",       "-x",   GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--domain",               "-h",   GetoptLong::REQUIRED_ARGUMENT ]
 )
 
 opts = {}
 args.each {|name, value| opts[name] = value}
-
-# # test
-# opts = {
-#   '--to' => 'abg237@nyu.edu',
-#   '--from' => 'a@alexandergibbons.com',
-#   '--subject' => 'test subject',
-#   '--body' => 'test body'
-# }
-# eotest
 
 
 Pony.mail(
@@ -30,12 +28,12 @@ Pony.mail(
   :body         => opts['--body'],
   :via          => :smtp, 
   :via_options  => {
-    :address              => 'smtp.gmail.com',
-    :port                 => '587',
-    :enable_starttls_auto => true,
-    :user_name            => 'a@alexandergibbons.com',
-    :password             => 'algae1nr',
-    :authentication       => :plain, # :plain, :login, :cram_md5, no auth by default
-    :domain               => "tiburon@alexandergibbons.com" # the HELO domain provided by the client to the server
+    :address              => opts['--address'],
+    :port                 => opts['--port'],
+    :enable_starttls_auto => opts['--enable_starttls_auto'],
+    :user_name            => opts['--user_name'],
+    :password             => opts['--password'],
+    :authentication       => opts['--authentication'],
+    :domain               => opts['--domain']
   }
 )
