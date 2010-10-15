@@ -5,8 +5,11 @@ Ext.ns('Finder');
 Finder.LocationHash = {
   
   getParam: function(key) {
+    var value;
+    
     key = window.escape(key);
-    return window.unescape(this._hash(document.location.hash)[key]);
+    value = this._hash(document.location.hash)[key];
+    return value !== undefined ? window.unescape(value) : value;
   },
   
   _hash: function(hash_string) {

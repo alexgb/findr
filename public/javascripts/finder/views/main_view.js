@@ -86,6 +86,7 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     // then set current users handle
     if (Finder.LocationHash.getParam('handle')) {
       Finder.meStore.getAt(0).set('handle', Finder.LocationHash.getParam('handle'));
+      Finder.meStore.sync();
     }
   },
   
