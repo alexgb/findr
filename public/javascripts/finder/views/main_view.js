@@ -56,6 +56,9 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     // register changes to friends
     Finder.friendStore.on('update', this.onUserChange, this);
     
+    // user location requests for friends
+    this.on('locationRequest', this.onLocationRequest, this);
+    
     // geo location
     this.geoLocation.on('locationupdate', function(geo) {
       console.log('location', geo);
@@ -78,6 +81,12 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
     if (!(Finder.meStore.getAt(0) && Finder.meStore.getAt(0).get('handle'))) {
       this.setCard(2);
     }
+    
+    // if user handle specified in url location hash
+    // then set current users handle
+    if (Finder.LocationHash.getParam('handle')) {
+      Finder.meStore.getAt(0).set('handle', Finder.LocationHash.getParam('handle'));
+    }
   },
   
   /**
@@ -92,6 +101,19 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
         name:       Finder.meStore.getAt(0).get('name')
       }
     });
+  },
+  
+  /**
+   * sends request to server to ask for friends location
+   */
+  onLocationRequest: function(record) {
+    this.socket.send({
+      type: 'locationRequest',
+      payLoad: {
+        handle:     record.get('handle')
+      }
+    });
+    record.set('response_pending', true);
   },
   
   onSocketMessage: function(msg) {

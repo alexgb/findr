@@ -60,9 +60,8 @@ Finder.FriendsList = Ext.extend(Ext.List, {
           id: 'friends-request-button',
           iconCls: 'locate',
           disabled: true,
-          handler: function() {
-              // new twitter.About({}).show();
-          }
+          scope: this,
+          handler: this.requestLocationHandler
         }]
       }]
     }, config);
@@ -95,6 +94,9 @@ Finder.FriendsList = Ext.extend(Ext.List, {
       this.fireEvent('countchanged', store.getCountConnected());
     }, this);
     
+    // bubble location requests to owner container
+    this.enableBubble('locationRequest');
+    
     Finder.FriendsList.superclass.initEvents.apply(this, arguments);
   },
   
@@ -124,6 +126,10 @@ Finder.FriendsList = Ext.extend(Ext.List, {
   deleteHandler: function() {
     this.store.remove(this.getSelectedRecords());
     this.store.sync();
+  },
+  
+  requestLocationHandler: function() {
+    this.fireEvent('locationRequest', this.getSelectedRecords()[0]);
   },
   
   /**

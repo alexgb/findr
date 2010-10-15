@@ -42,6 +42,10 @@ Finder.MyInfo = Ext.extend(Ext.form.FormPanel, {
     }
     
     this.load(record);
+    
+    Finder.meStore.on('update', function(store, record) {
+      this.load(record);
+    }, this);
   },
   
   saveHandler: function() {
