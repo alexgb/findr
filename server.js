@@ -1,164 +1,23 @@
-// WORKS
 /*globals __dirname */
+require.paths.unshift(__dirname + "/lib");
+require.paths.unshift(__dirname + "/vendor");
 
-var sockets = require('./vendor/socket.io-node/'),
-    express = require('express'),
-    sys = require('sys'),
-    jade = require('jade'),
-    clients = {},
-    buffer = [],
-    app,
-    io;
+var express = require('express'),
+    findrApp = require('findr_app'),
+    server;
 
 // Express
 // .......
-app = express.createServer();
-app.set('view engine', 'jade');
-app.configure(function(){
-    app.use(express.methodOverride());
-    app.use(express.bodyDecoder());
-    app.use(app.router);
-    app.use(express.staticProvider(__dirname + '/public'));
+server = express.createServer();
+server.configure(function(){
+  server.use(express.methodOverride());
+  server.use(express.bodyDecoder());
+  server.use(server.router);
+  server.use(express.staticProvider(__dirname + '/public'));
 });
-
-// express response
-app.get('/hello', function(req, res){
-    res.send('hello world');
-});
-
-// jade rendered response
-app.get('/test', function(req, res){
-    res.render('test', {
-      locals: {
-        title: 'Jade working!'
-      }
-    });
-});
-
-app.listen(8080);
+server.listen(8080);
 
 
-
-
-// Socket.IO
-// .........
-
-
-// handler helpers
-
-var _pushFriend = function(client, friend) {
-  client.client.send({
-    type: 'pushFriend',
-    payLoad: {handle: friend.handle, name: friend.name, position: friend.position, connected: !!friend.client}
-  });
-};
-
-var _onRegisterFriends = function(fromHandle, friends) {
-  var c = clients[fromHandle],
-      i, f;
-
-  if (c) c['friends'] = friends.map(function(frnd) {return frnd.handle});
-  
-  // register each friend as client and register user as friend
-  for (i=0; i<friends.length; i++) {
-    if (friends[i]['handle'] !== fromHandle) {
-      f = clients[friends[i]['handle']] = clients[friends[i]['handle']] || {};
-      f['friends'] = f['friends'] || [];
-      
-      // if friend doesn't exist add
-      if (f['friends'].indexOf(fromHandle) === -1) {
-        f['friends'].push(fromHandle);
-        if (f.client) {
-          _pushFriend(f, c);
-        }
-      }
-    }
-  }
-};
-
-// handlers
-var onClientRegister = function(client, message) {
-  var handle = message.payLoad.handle,
-      c;
-  c = clients[handle] = clients[handle] || {};
-  
-  c['client'] = client;
-  c['name'] = message.payLoad.name;
-  c['handle'] = handle;
-  
-  _onRegisterFriends(handle, message.payLoad.friends);
-};
-
-
-
-var onlocationNotification = function(client, message) {
-  var handle = message.from,
-      c = clients[handle];
-  
-  if (c) c['position'] = message.payLoad.position;
-  
-  // message friends with location
-  c.friends.forEach(function(frnd) {
-    if (clients[frnd].client) {
-      _pushFriend(clients[frnd], c);
-    }
-  });
-};
-
-
-io = sockets.listen(app);
-
-
-io.on('clientMessage', function(message, client) {
-  switch(message.type) {
-  case 'register':
-    onClientRegister(client, message);
-    break;
-  case 'locationNotification':
-    onlocationNotification(client, message);
-    break;
-  }
-  printClients();
-});
-
-
-
-
-
-
-// Helpers
-// .......
-
-var printClients = function() {
-  sys.puts("\033[1;47m    Clients:    \033[0m");
-  for (var handle in clients) {
-    var c = clients[handle];
-    sys.puts("\033[1;42m  " + handle + "  \033[0m" + " => ");
-    if (typeof c === "object") {
-      for (var prop in c) {
-        var v = c[prop];
-        if (prop === 'position') {
-          v = "{";
-          for (var key in c[prop]) {
-            v += key + " => " + c[prop][key] + ", ";
-          }
-          v += "}";
-        }
-        sys.puts("\t" + prop + " => " + v);
-      }
-    }
-  }
-};
-
-// function(path) {
-//   try {
-//    var swf = path.substr(-4) === '.swf';
-//    res.writeHead(200, {'Content-Type': swf ? 'application/x-shockwave-flash' : ('text/' + (path.substr(-3) === '.js' ? 'javascript' : 'html'))});
-//    fs.readFile(__dirname + path, swf ? 'binary' : 'utf8', function(err, data){
-//      if (!err) res.write(data, swf ? 'binary' : 'utf8');
-//      res.end();
-//    });
-//  } catch(e){ 
-//    send404(res); 
-//  }
-// }
+// Find'r App
+// ..........
+findrApp.listen(server);
