@@ -23,7 +23,6 @@ server.configure(function(){
 // configuration
 server.get('/config.json', function(req, res) {
   res.send(config.server);
-  // res.send(JSON.stringify(config.server));
 });
 
 server.listen(config.server.port);
