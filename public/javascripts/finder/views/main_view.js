@@ -32,7 +32,7 @@ Finder.MainView = Ext.extend(Ext.TabPanel, {
       }]
     }, config);
     
-    this.socket = new Finder.Socket();
+    this.socket = new Finder.Socket({port: config.port});
     this.geoLocation = new Finder.GeoLocation();
     
     Finder.MainView.superclass.constructor.call(this, config);
