@@ -20,7 +20,7 @@ server.configure(function(){
   server.use(express.staticProvider(__dirname + '/public'));
 });
 
-// configuration
+// pass conguration to client
 server.get('/config.json', function(req, res) {
   res.send(config.server);
 });
