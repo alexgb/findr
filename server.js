@@ -4,7 +4,11 @@ require.paths.unshift(__dirname + "/vendor");
 
 var express = require('express'),
     findrApp = require('findr_app'),
+    fs = require('fs'),
+    config,
     server;
+    
+config = JSON.parse(fs.readFileSync('./config/settings.json').toString());
 
 // Express
 // .......
@@ -15,9 +19,17 @@ server.configure(function(){
   server.use(server.router);
   server.use(express.staticProvider(__dirname + '/public'));
 });
-server.listen(8080);
+
+// configuration
+server.get('/config.json', function(req, res) {
+  res.send(config.server);
+  // res.send(JSON.stringify(config.server));
+});
+
+server.listen(config.server.port);
 
 
 // Find'r App
 // ..........
+findrApp.setup(config);
 findrApp.listen(server);
