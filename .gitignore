@@ -1,3 +1,8 @@
-config/*.json
+/config/*.json
 test_*
-vendor/*
+
+# ignore specific vendor files that are bundled on install
+/vendor/.npm/
+/vendor/index.js
+/vendor/connect*
+/vendor/express*
