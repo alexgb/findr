@@ -1,5 +1,6 @@
 /config/*.json
 test_*
+tmp/
 
 # ignore specific vendor files that are bundled on install
 /vendor/.npm/
