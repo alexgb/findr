@@ -24,7 +24,12 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
       fullscreen: true,
       items: [{
         xtype: 'map',
-        id: 'finder-g-map'
+        id: 'finder-g-map',
+        mapOptions: {
+          center: new window.google.maps.LatLng(24, -18),
+          zoom: 2,
+          mapTypeId: window.google.maps.MapTypeId.ROADMAP
+        }
       }]
     }, config);
     
