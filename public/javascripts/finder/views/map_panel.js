@@ -20,7 +20,7 @@ Finder.MapPanel = Ext.extend(Ext.Panel, {
     
     config = Ext.apply({
       title: 'Map',
-      iconCls: 'settings',
+      iconCls: 'map',
       fullscreen: true,
       items: [{
         xtype: 'map',
