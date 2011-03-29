@@ -17,7 +17,7 @@
     description "find'r node.js server"
     author      "AUTHOR"
 
-    start on startup
+    start on (local-filesystems and net-device-up IFACE=eth0)
     stop on shutdown
 
     env NODE_PATH=/home/alex/local/lib/node
